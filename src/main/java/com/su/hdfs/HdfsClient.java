@@ -2,14 +2,14 @@ package com.su.hdfs;
 
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 /**
  * 客户端代码常用套路
@@ -74,6 +74,34 @@ public class HdfsClient {
     public void testMv() throws IOException {
         //文件的重命名和移动
         fs.rename(new Path("/si.txt"),new Path("/jinguo/shuguo.txt"));
+    }
+
+    @Test
+    public void testLs() throws IOException {
+        // 查看文件详情
+        RemoteIterator<LocatedFileStatus> listFiles = fs.listFiles(new Path("/"), true);
+        while (listFiles.hasNext()) {
+            LocatedFileStatus fileStatus = listFiles.next();
+            System.out.println("==========" + fileStatus.getPath() + "=============");
+            System.out.println(fileStatus.getPermission());
+
+            //获取块信息
+            BlockLocation[] blockLocations = fileStatus.getBlockLocations();
+            System.out.println(Arrays.toString(blockLocations));
+        }
+    }
+
+    @Test
+    public void testIsFile() throws IOException {
+        FileStatus[] listStatuses = fs.listStatus(new Path("/"));
+        for(FileStatus fileStatus : listStatuses){
+            //判断是文件还是文件夹
+            if(fileStatus.isFile()){
+                System.out.println("f:" + fileStatus.getPath().getName());
+            }else {
+                System.out.println("d:" + fileStatus.getPath().getName());
+            }
+        }
     }
 
     @After
