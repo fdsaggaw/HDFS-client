@@ -85,6 +85,8 @@ public class HdfsClient {
             System.out.println("==========" + fileStatus.getPath() + "=============");
             System.out.println(fileStatus.getPermission());
             System.out.println(fileStatus.getGroup());
+            System.out.println(fileStatus.getBlockSize());
+            System.out.println(fileStatus.getOwner());
 
             //获取块信息
             BlockLocation[] blockLocations = fileStatus.getBlockLocations();
